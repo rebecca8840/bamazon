@@ -2,10 +2,11 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 
 var connection = mysql.createConnection({
-  host     : "localhost",
-  user     : "root",
-  password : "secret",
-  database : "bamazon"
+  host: "localhost",
+  port: "3306",
+  user: "root",
+  password: "root",
+  database: "bamazon"
 });
 
 connection.connect(function(err) {
@@ -13,24 +14,26 @@ connection.connect(function(err) {
   start();
 });
 
-function hello() {
+function start() {
 	inquirer.prompt(
     {
 	    name: "decision",
       type: "list",
-      message: "How would you like to proceed?",
+      message: "Hello! How would you like to proceed?",
       choices: ["View items", "Buy item[s]", "Cancel"]
-    }).then(function(answer) {
+    })
+
+  .then(function(answer) {
 
       if (answer.decision === "View items") {
         selectAll();
       } 
 
       else if (answer.decision === "Buy item[s]") {
-        Buy();
+        buy();
       } 
 
-      else  if (answer.decision === "Cancel") {
+      else if (answer.decision === "Cancel") {
       	connection.end();
       }
 
@@ -38,9 +41,10 @@ function hello() {
 
 };
 
-function Buy() {
+function buy() {
 
-    inquirer.prompt([
+    inquirer
+    .prompt([
         {
           type: "input",
           name: "item_id",
@@ -51,7 +55,9 @@ function Buy() {
           name: "quantity",
           message: "How many of the items would you like to purchase?"
         }
-      ]).then(function(answer) {
+      ])
+
+    .then(function(answer) {
 
         var currentItem = answer.item_id;
         var currentAmount = answer.quantity;
@@ -72,7 +78,7 @@ function Buy() {
 
             var newQuantity = (results[0].stock_quantity - currentAmount);
 
-            var totalCost = (results[0].price*currentAmount);
+            var totalCost = (results[0].price * currentAmount);
 
             connection.query('update products set ? where ?',[{
 
@@ -87,7 +93,7 @@ function Buy() {
             }], 
 
             function(err,results) {
-              console.log("Thank you!  You were charged $" + totalCost + ". Please come again!");
+              console.log("Thank you!  You were charged $" + totalCost + ".");
               start();
             })
 
