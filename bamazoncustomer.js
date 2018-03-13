@@ -26,7 +26,7 @@ function start() {
   .then(function(answer) {
 
       if (answer.decision === "View items") {
-        selectAll();
+        showAll();
       } 
 
       else if (answer.decision === "Buy item[s]") {
@@ -47,7 +47,7 @@ function buy() {
     .prompt([
         {
           type: "input",
-          name: "item_id",
+          name: "item_number",
           message: "Select the Item ID you'd like to purchase."
         },
         {
@@ -105,7 +105,7 @@ function buy() {
 
     }
 
-function selectAll() {
+function showAll() {
 
 	connection.query("select * from products", function(err, results) {
 		for (var i = 0; i < results.length; i++) {
