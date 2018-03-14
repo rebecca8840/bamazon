@@ -19,7 +19,7 @@ function start() {
     {
 	    name: "decision",
       type: "list",
-      message: "Hello! How would you like to proceed?",
+      message: "How would you like to proceed?",
       choices: ["View items", "Buy item[s]", "Cancel"]
     })
 
