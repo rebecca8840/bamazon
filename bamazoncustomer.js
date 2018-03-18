@@ -59,17 +59,17 @@ function buy() {
 
     .then(function(answer) {
 
-        var currentItem = answer.item_id;
+        var currentItem = answer.item_number;
         var currentAmount = answer.quantity;
 
-        connection.query('select * from products where ?', {
+          console.log("current item" + currentItem);
+        connection.query("select * from products where item_id = ?",[currentItem], function(err,results) {
+          console.log("prompt: currentAmount" + currentAmount);
+          console.log("results quantity" + results[0].stock_quantity);
 
-          item_id: answer.item_id
-
-        }, function(err,results) {
           if (currentAmount > results[0].stock_quantity) {
             console.log("Sorry, we do not have enough of this item in stock!");
-            buyItem();
+            buy();
           } 
 
           else {
@@ -80,17 +80,7 @@ function buy() {
 
             var totalCost = (results[0].price * currentAmount);
 
-            connection.query('update products set ? where ?',[{
-
-              stock_quantity: newQuantity
-
-            },
-
-            {
-              
-              item_id: currentItem
-
-            }], 
+            connection.query("update products set stock_quantity = ? where item_id = ?",[newQuantity,currentItem], 
 
             function(err,results) {
               console.log("Thank you!  You were charged $" + totalCost + ".");
